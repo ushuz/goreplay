@@ -11,8 +11,8 @@ BENCHMARK = BenchmarkRAWInput
 TEST = TestRawListenerBench
 BIN_NAME = gor
 VERSION := DEV-$(shell date +%s)
-LDFLAGS = -ldflags "-X main.VERSION=$(VERSION) -extldflags \"-static\" -X main.DEMO=$(DEMO)"
-MAC_LDFLAGS = -ldflags "-X main.VERSION=$(VERSION) -X main.DEMO=$(DEMO)"
+LDFLAGS = -ldflags "-X github.com/buger/goreplay.VERSION=$(VERSION) -extldflags \"-static\" -X github.com/buger/goreplay.DEMO=$(DEMO)"
+MAC_LDFLAGS = -ldflags "-X github.com/buger/goreplay.VERSION=$(VERSION) -X github.com/buger/goreplay.DEMO=$(DEMO)"
 DOCKER_FPM_CMD := docker run --rm -t -v `pwd`:/src -w /src fleetdm/fpm
 
 FPM_COMMON= \
@@ -31,10 +31,10 @@ vendor:
 	go mod vendor
 
 release-bin-linux-amd64: vendor
-	docker run --platform linux/amd64 --rm -v `pwd`:$(SOURCE_PATH) -t --env GOOS=linux --env GOARCH=amd64 -i $(CONTAINER_AMD) go build -mod=vendor -o $(BIN_NAME) -tags netgo $(LDFLAGS) ./cmd/gor/
+	docker run --platform linux/amd64 --rm -v `pwd`:$(SOURCE_PATH) -t --env GOOS=linux --env GOARCH=amd64 -i $(CONTAINER_AMD) go build -buildvcs=false -mod=vendor -o $(BIN_NAME) -tags netgo $(LDFLAGS) ./cmd/gor/
 
 release-bin-linux-arm64: vendor
-	docker run --platform linux/arm64 --rm -v `pwd`:$(SOURCE_PATH) -t --env GOOS=linux --env GOARCH=arm64 -i $(CONTAINER_ARM) go build -mod=vendor -o $(BIN_NAME) -tags netgo $(LDFLAGS) ./cmd/gor/
+	docker run --platform linux/arm64 --rm -v `pwd`:$(SOURCE_PATH) -t --env GOOS=linux --env GOARCH=arm64 -i $(CONTAINER_ARM) go build -buildvcs=false -mod=vendor -o $(BIN_NAME) -tags netgo $(LDFLAGS) ./cmd/gor/
 
 release-bin-mac-amd64: vendor
 	GOOS=darwin go build -mod=vendor -o $(BIN_NAME) $(MAC_LDFLAGS) ./cmd/gor/
